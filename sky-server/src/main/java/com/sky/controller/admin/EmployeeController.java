@@ -1,6 +1,7 @@
 package com.sky.controller.admin;
 
 import com.sky.constant.JwtClaimsConstant;
+import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
@@ -18,8 +19,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spring.web.readers.operation.ApiOperationReader;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
 
 /**
  * 员工管理
@@ -117,6 +120,34 @@ public class EmployeeController {
     public Result stratOrStop(@PathVariable Integer status,Long id) {
         log.info("启用和禁用员工：{}",status,id);
         employeeService.startOrStop(status,id);
+        return Result.success();
+    }
+
+    /**
+     * 根据id查找员工信息
+     * @param id
+     * @return
+     */
+    @ApiOperation("根据id查找员工信息")
+    @GetMapping("/{id}")
+    public Result<Employee> getById(@PathVariable Long id) {
+        log.info("根据员工id查找员工信息：{}",id);
+        Employee employee = new Employee();
+        employee = employeeService.getById(id);
+        employee.setPassword("****");
+        return Result.success(employee);
+    }
+
+    /**
+     * 更新员工信息
+     * @param employeeDTO
+     * @return
+     */
+    @ApiOperation("更新员工信息")
+    @PutMapping
+    public Result update(@RequestBody EmployeeDTO employeeDTO){
+        log.info("需要更新的员工信息为{}",employeeDTO);
+        employeeService.update(employeeDTO);
         return Result.success();
     }
 
